@@ -1,0 +1,23 @@
+{
+  "author": {
+    "email": "TrejGun+OpenSource@gmail.com",
+    "name": "TrejGun"
+  },
+  "dependencies": {
+    "js-yaml": "3.13.1"
+  },
+  "engines": {
+    "node": ">=12"
+  },
+  "license": "UNLICENSED",
+  "main": "./index.jsm",
+  "module": "./index.jsm",
+  "name": "internetstores-test",
+  "scripts": {
+    "start": "node --experimental-modules index.mjs"
+  },
+  "sideEffects": false,
+  "title": "-=internetstores test=-",
+  "type": "module",
+  "version": "0.0.1"
+}
