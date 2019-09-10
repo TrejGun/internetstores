@@ -1,4 +1,5 @@
 --reporter spec
+--async-only
 --require @babel/register
 --timeout 10000
 --ui bdd

@@ -1,0 +1,11 @@
+{
+  "anpl": {
+    "production": {
+      "c": 3,
+      "d": 3
+    },
+    "development": {
+      "d": 4
+    }
+  }
+}
