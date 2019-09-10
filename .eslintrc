@@ -1,12 +1,14 @@
 {
   "env": {
+    "mocha": true,
     "node": true
   },
   "extends": [
     "standard",
     "eslint:recommended",
     "plugin:import/errors",
-    "plugin:import/warnings"
+    "plugin:import/warnings",
+    "plugin:mocha/recommended"
   ],
   "parser": "babel-eslint",
   "parserOptions": {
@@ -16,8 +18,10 @@
   "plugins": [
     "standard",
     "babel",
-    "import"
+    "import",
+    "mocha"
   ],
+  "root": true,
   "rules": {
     "arrow-parens": [
       "error",
@@ -51,6 +55,7 @@
       "error",
       "unix"
     ],
+    "mocha/no-exclusive-tests": "error",
     "no-console": [
       "error",
       {
