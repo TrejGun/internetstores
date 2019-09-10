@@ -1,74 +1,7 @@
-import fs from "fs";
-import path from "path";
-import {promisify} from "util";
-import yaml from "js-yaml";
+import {checkItems,getItems,readFiles} from "./utils/file.mjs";
+import {isObject,mergeDeep} from "./utils/object.mjs";
 
 
-
-function getItems(dirname) {
-  return promisify(fs.readdir)(dirname)
-    .then(items => items.map(item => path.join(dirname, item)));
-}
-
-function checkItems(items) {
-  return Promise.all(items.map(item => promisify(fs.stat)(item)
-    .then(stat => {
-      if (stat.isFile()) {
-        return item;
-      } else { // isDir
-        throw new Error(`${item} is not a file!`);
-      }
-    })
-    .catch(console.error)))
-    .then(files => {
-      return files.filter(file => file);
-    });
-}
-
-function readFiles(files) {
-  return Promise.all(files.map(file => {
-    return promisify(fs.readFile)(file)
-      .then(buffer => {
-        if (file.endsWith(".json")) {
-          return JSON.parse(buffer);
-        } else if (file.endsWith(".yml") || file.endsWith(".yaml")) {
-          return yaml.safeLoad(buffer);
-        } else {
-          throw new Error(`${file} is not a config file!`);
-        }
-      })
-      .catch(console.error);
-  }))
-    .then(configs => {
-      return configs.filter(config => config);
-    });
-}
-
-function isObject(item) {
-  return (item && typeof item === "object" && !Array.isArray(item));
-}
-
-function mergeDeep(target, ...sources) {
-  if (!sources.length) {
-    return target;
-  }
-  const source = sources.shift();
-
-  if (isObject(target) && isObject(source)) {
-    for (const key in source) {
-      if (isObject(source[key])) {
-        if (!target[key]) {
-          Object.assign(target, {[key]: {}});
-        }
-        mergeDeep(target[key], source[key]);
-      } else {
-        Object.assign(target, {[key]: source[key]});
-      }
-    }
-  }
-
-  return mergeDeep(target, ...sources);
-}
 
 const envs = ["development", "test", "staging", "production"];
 
@@ -82,33 +15,10 @@ async function getConfig(configName, siteId, environment) {
   // Get all files from config dir
   const items = await getItems(configDir);
 
-  // console.log("items", items);
-  /*
-    'configs/checkout',
-    'configs/checkout.html',
-    'configs/checkout.json',
-    'configs/checkout_anpl.json',
-    'configs/checkout_bkbe.json',
-    'configs/config.yml',
-    'configs/config_bkbe.yml',
-    'configs/forms_customer.yml',
-    'configs/forms_customer_bkit.yml'
-  */
 
   // Remove directories
   const files = await checkItems(items);
 
-  // console.log("files", files);
-  /*
-    'configs/checkout.html',
-    'configs/checkout.json',
-    'configs/checkout_anpl.json',
-    'configs/checkout_bkbe.json',
-    'configs/config.yml',
-    'configs/config_bkbe.yml',
-    'configs/forms_customer.yml',
-    'configs/forms_customer_bkit.yml'
-  */
 
   // Filter files by name
   // After this point we can potentially have 6 valid files
@@ -122,13 +32,6 @@ async function getConfig(configName, siteId, environment) {
     file.includes(`${configName}.`) ||
     file.includes(`${configName}_${siteId}.`),
   );
-
-  // console.log("filteredFiles", filteredFiles);
-  /*
-    'configs/checkout.html',
-    'configs/checkout.json',
-    'configs/checkout_anpl.json'
-  */
 
   const configs = await readFiles(filteredFiles);
 
