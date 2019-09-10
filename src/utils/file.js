@@ -3,12 +3,13 @@ import fs from "fs";
 import path from "path";
 import yaml from "js-yaml";
 
-export function getItems(dirname) {
+
+export function getItems (dirname) {
   return promisify(fs.readdir)(dirname)
     .then(items => items.map(item => path.join(dirname, item)));
 }
 
-export function checkItems(items) {
+export function checkItems (items) {
   return Promise.all(items.map(item => promisify(fs.stat)(item)
     .then(stat => {
       if (stat.isFile()) {
@@ -23,7 +24,7 @@ export function checkItems(items) {
     });
 }
 
-export function readFiles(files) {
+export function readFiles (files) {
   return Promise.all(files.map(file => {
     return promisify(fs.readFile)(file)
       .then(buffer => {

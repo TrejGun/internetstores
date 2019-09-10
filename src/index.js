@@ -1,15 +1,14 @@
-import {checkItems,getItems,readFiles} from "./utils/file";
-import {isObject,mergeDeep} from "./utils/object";
-
+import {checkItems, getItems, readFiles} from "./utils/file";
+import {mergeDeep} from "./utils/object";
 
 
 const envs = ["development", "test", "staging", "production"];
 
-function isEnvConfig(config) {
+function isEnvConfig (config) {
   return Object.keys(config).some(value => envs.includes(value));
 }
 
-async function getConfig(configName, siteId, environment) {
+async function getConfig (configName, siteId, environment) {
   const configDir = "./configs";
 
   // Get all files from config dir
@@ -29,8 +28,8 @@ async function getConfig(configName, siteId, environment) {
   // - checkout_anpl.yaml
   // - checkout_anpl.yml
   const filteredFiles = files.filter(file =>
-    file.includes(`${configName}.`) ||
-    file.includes(`${configName}_${siteId}.`),
+    file.includes(`${configName}.`)
+    || file.includes(`${configName}_${siteId}.`),
   );
 
   const configs = await readFiles(filteredFiles);
@@ -41,11 +40,9 @@ async function getConfig(configName, siteId, environment) {
   // so we have to add specificity points
   const specificity = [];
   configs.forEach((config, i) => {
-
     // extracting config with specificity
     // there are 8 cases and we start with most specific
     if (siteId in config) {
-
       if (isEnvConfig(config[siteId])) {
         // most specific case full path $siteId->$env->data
         if (environment in config[siteId]) {
@@ -73,9 +70,8 @@ async function getConfig(configName, siteId, environment) {
       if (environment !== "production" && "production" in config) {
         specificity.push([4 + i, config["production"]]);
       }
-    } else
-    // this is default config
-    if ("default" in config) {
+    } else if ("default" in config) {
+      // this is default config
       if (isEnvConfig(config["default"])) {
         // default env config $env->data
         if (environment in config["default"]) {
@@ -88,9 +84,8 @@ async function getConfig(configName, siteId, environment) {
 
         // this file has no default config for this env
       }
-    } else
-    // file is a config itself
-    {
+    } else {
+      // file is a config itself
       specificity.push([1 + i, config]);
     }
   });
@@ -101,7 +96,5 @@ async function getConfig(configName, siteId, environment) {
 }
 
 getConfig("checkout", "anpl", "staging")
-  .then(config => console.log(JSON.stringify(config, null, "  ")))
+  .then(config => console.debug(JSON.stringify(config, null, "  ")))
   .catch(console.error);
-
-
