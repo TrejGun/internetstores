@@ -1,5 +1,5 @@
-import {checkItems,getItems,readFiles} from "./utils/file.mjs";
-import {isObject,mergeDeep} from "./utils/object.mjs";
+import {checkItems,getItems,readFiles} from "./utils/file";
+import {isObject,mergeDeep} from "./utils/object";
 
 
 

@@ -1,20 +1,27 @@
 {
   "author": {
-    "email": "TrejGun+OpenSource@gmail.com",
+    "email": "TrejGun@gmail.com",
     "name": "TrejGun"
   },
   "dependencies": {
     "js-yaml": "3.13.1"
   },
+  "devDependencies": {
+    "@babel/cli": "7.6.0",
+    "@babel/core": "7.6.0",
+    "@babel/node": "7.6.1",
+    "@babel/preset-env": "7.6.0"
+  },
   "engines": {
-    "node": ">=12"
+    "node": ">=8"
   },
   "license": "UNLICENSED",
-  "main": "./index.jsm",
-  "module": "./index.jsm",
+  "main": "./dist/index.js",
+  "module": "./src/index.js",
   "name": "internetstores-test",
   "scripts": {
-    "start": "node --experimental-modules index.mjs"
+    "build": "babel -d ./dist ./src --delete-dir-on-start",
+    "start": "babel-node ."
   },
   "sideEffects": false,
   "title": "-=internetstores test=-",
